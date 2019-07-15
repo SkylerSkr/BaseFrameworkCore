@@ -19,7 +19,7 @@ Model文件夹：存放业务模型。<br>
 通过RepoBase，可以快速处理单表的CRUD
 
 ## 3-DataAccess 数据访问层
-### Base-Domain 实体层
+### Base.Domain 实体层
 Entitys文件夹:实体,需继承EntityBase基类。<br>
 Enum文件夹:数据库枚举。<br>
 ### Base.Repository 数据访问层
