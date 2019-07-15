@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Base.Api</name>
+    </assembly>
+    <members>
+        <member name="M:Base.Api.Controllers.ValuesController.Get(Base.SDK.Request.Test.TestGetRequest)">
+            <summary>
+            获取单个
+            </summary>
+            <param name="req"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Base.Api.Controllers.ValuesController.Save(Base.SDK.Request.Test.TestSaveRequest)">
+            <summary>
+            保存 Insert和Edit
+            </summary>
+            <param name="req"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Base.Api.Controllers.ValuesController.Delete(Base.SDK.Request.Test.TestSaveRequest)">
+            <summary>
+            删除
+            </summary>
+            <param name="req"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Base.Api.Controllers.ValuesController.GetList(Base.SDK.Request.Test.TestGetListRequest)">
+            <summary>
+            获取列表
+            </summary>
+            <param name="req"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Base.Api.DefaultModule.GetAssemblyByName(System.String)">
+            <summary>
+            根据程序集名称获取程序集
+            </summary>
+            <param name="AssemblyName">程序集名称</param>
+            <returns></returns>
+        </member>
+        <member name="T:Base.Api.Interceptor.TransactionInterceptor">
+            <summary>
+            事务拦截器
+            </summary>
+        </member>
+    </members>
+</doc>
