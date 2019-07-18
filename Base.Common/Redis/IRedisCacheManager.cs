@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Base.Repository.Redis
-{ 
+namespace Base.Common.Redis
+{
     /// <summary>
     /// Redis缓存接口
     /// </summary>

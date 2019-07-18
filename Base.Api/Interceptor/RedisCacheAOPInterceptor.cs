@@ -1,11 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Base.Repository.Attribute;
-using Base.Repository.Redis;
+﻿using Base.Common.Attribute;
+using Base.Common.Redis;
 using Base.SDK.Response;
 using Castle.DynamicProxy;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Base.Api.Interceptor
 {

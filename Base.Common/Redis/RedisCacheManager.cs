@@ -5,7 +5,7 @@ using Base.Common.Config;
 using Base.Common.Helper;
 using StackExchange.Redis;
 
-namespace Base.Repository.Redis
+namespace Base.Common.Redis
 {
     public class RedisCacheManager : IRedisCacheManager
     {
