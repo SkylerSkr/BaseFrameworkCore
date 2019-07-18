@@ -14,6 +14,7 @@ using System.Reflection;
 using Autofac.Extras.DynamicProxy;
 using Base.Api.Error;
 using Base.Api.Interceptor;
+using Base.Repository.Redis;
 using NLog.Extensions.Logging;
 using NLog.Web;
 using Swashbuckle.AspNetCore.Swagger;
@@ -77,7 +78,12 @@ namespace Base.Api
             //将Services中的服务填充到Autofac中
             builder.Populate(services);
 
+            //redis注入
+            //services.AddSingleton<IRedisCacheManager, RedisCacheManager>();
+            builder.RegisterType<RedisCacheManager>().As<IRedisCacheManager>();
+
             #region 事务拦截器注入
+            builder.RegisterType<RedisCacheAOPInterceptor>();
             builder.RegisterType<TransactionInterceptor>();//可以直接替换其他拦截器！一定要把拦截器进行注册
 
             var assemblysServices = Assembly.Load("Base.BusinessService");
@@ -87,7 +93,8 @@ namespace Base.Api
                 .AsImplementedInterfaces()
                 .InstancePerLifetimeScope()
                 .EnableInterfaceInterceptors()//引用Autofac.Extras.DynamicProxy;
-                .InterceptedBy(typeof(TransactionInterceptor));//可以直接替换拦截器
+               .InterceptedBy(typeof(RedisCacheAOPInterceptor), typeof(TransactionInterceptor));//可以直接替换拦截器 使用redis全局缓存
+               //.InterceptedBy(typeof(TransactionInterceptor));//不使用redis全局缓存
             #endregion
 
 

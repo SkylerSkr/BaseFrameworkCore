@@ -39,6 +39,20 @@
             <param name="AssemblyName">程序集名称</param>
             <returns></returns>
         </member>
+        <member name="M:Base.Api.Interceptor.RedisCacheAOPInterceptor.CustomCacheKey(Castle.DynamicProxy.IInvocation)">
+            <summary>
+            自定义缓存的key
+            </summary>
+            <param name="invocation"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Base.Api.Interceptor.RedisCacheAOPInterceptor.GetArgumentValue(System.Object)">
+            <summary>
+            object 转 string
+            </summary>
+            <param name="arg"></param>
+            <returns></returns>
+        </member>
         <member name="T:Base.Api.Interceptor.TransactionInterceptor">
             <summary>
             事务拦截器
