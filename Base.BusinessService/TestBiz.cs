@@ -6,6 +6,7 @@ using Base.Repository.Repo;
 using Base.SDK.Request.Test;
 using Base.SDK.Response;
 using System.Linq;
+using Base.Repository.Attribute;
 using Base.SDK.Model;
 
 namespace Base.BusinessService
@@ -14,6 +15,7 @@ namespace Base.BusinessService
     {
         private static readonly TestRepo TestRepo = new TestRepo();
 
+        [Caching(AbsoluteExpiration = 10000)]
         public SingleApiResponse Get(TestGetRequest req)
         {
             //单表查询
@@ -51,6 +53,7 @@ namespace Base.BusinessService
             return new SingleApiResponse();
         }
 
+        [Caching(AbsoluteExpiration = 10000)]
         public ListApiResponse GetList(TestGetListRequest req)
         {
            var result= TestRepo.GetList<SysUserModel>(req);
