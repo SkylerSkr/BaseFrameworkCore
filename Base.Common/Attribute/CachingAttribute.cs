@@ -2,9 +2,8 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Base.Repository.Attribute
-{
-    /// <summary>
+namespace Base.Common.Attribute
+{ /// <summary>
     /// 这个Attribute就是使用时候的验证，把它添加到要缓存数据的方法中，即可完成缓存的操作。
     /// </summary>
     [AttributeUsage(AttributeTargets.Method, Inherited = true)]

@@ -1,13 +1,12 @@
-﻿using System;
+﻿using Base.Common.Attribute;
 using Base.Domain.Entitys;
 using Base.IBusinessService;
 using Base.Repository;
 using Base.Repository.Repo;
+using Base.SDK.Model;
 using Base.SDK.Request.Test;
 using Base.SDK.Response;
 using System.Linq;
-using Base.Repository.Attribute;
-using Base.SDK.Model;
 
 namespace Base.BusinessService
 {
@@ -45,7 +44,7 @@ namespace Base.BusinessService
 
         public SingleApiResponse Delete(TestSaveRequest req)
         {
-            var result = RepoBase.Instance.GetWhere<SysUserInfoes>(x => x.UID ==req.UID).ToList().FirstOrDefault();
+            var result = RepoBase.Instance.GetWhere<SysUserInfoes>(x => x.UID == req.UID).ToList().FirstOrDefault();
             if (result == null) return new SingleApiResponse() { BizErrorMsg = "不包含此用户" };
 
             RepoBase.Instance.Delete(result);
@@ -56,8 +55,8 @@ namespace Base.BusinessService
         [Caching(AbsoluteExpiration = 10000)]
         public ListApiResponse GetList(TestGetListRequest req)
         {
-           var result= TestRepo.GetList<SysUserModel>(req);
-           return  new ListApiResponse(){Data=result.Item2,TotalCount = result.Item1};
+            var result = TestRepo.GetList<SysUserModel>(req);
+            return new ListApiResponse() { Data = result.Item2, TotalCount = result.Item1 };
         }
     }
 }
