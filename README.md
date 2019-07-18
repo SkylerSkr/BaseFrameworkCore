@@ -32,7 +32,7 @@ RepoBase：一些扩展方法，使用此扩展方法，可以在Biz层快速处
 Controllers文件夹：存放控制器。<br>
 Error文件夹：异常处理中间件。<br>
 Filter文件夹：动作过滤器记录日志和认证，异常过滤器记录异常日志。<br>
-Interceptor文件夹：
+Interceptor文件夹：<br>
 1.使用拦截器控制全局事务,单请求内有非侵入的事务处理。<br>
 2.使用拦截器实现全局缓存,单请求内以请求为Key的Redis缓存。(StartUp中注入,Biz层方法上加特性。)<br>
 
