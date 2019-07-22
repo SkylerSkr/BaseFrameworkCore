@@ -60,8 +60,7 @@ namespace Base.Api.Interceptor
                     }
                     else
                     {
-                        // 核心2，要进行 ChangeType
-                        //response = Convert.ChangeType(Cache.Get<object>(cacheKey), type);
+                        //将缓存返回给调用者
                         if (type == typeof(SingleApiResponse))
                         {
                             response = Cache.Get<SingleApiResponse>(cacheKey);
@@ -102,7 +101,8 @@ namespace Base.Api.Interceptor
             }
             else
             {
-                invocation.Proceed();//直接执行被拦截方法
+                //直接执行被拦截方法
+                invocation.Proceed();
             }
         }
         /// <summary>
@@ -114,7 +114,8 @@ namespace Base.Api.Interceptor
         {
             var typeName = invocation.TargetType.Name;
             var methodName = invocation.Method.Name;
-            var methodArguments = invocation.Arguments.Select(GetArgumentValue).Take(3).ToList();//获取参数列表，最多三个
+            //获取参数列表，最多三个
+            var methodArguments = invocation.Arguments.Select(GetArgumentValue).Take(3).ToList();
 
             string key = $"{typeName}:{methodName}:";
             foreach (var param in methodArguments)
