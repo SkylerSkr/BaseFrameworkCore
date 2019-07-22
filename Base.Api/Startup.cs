@@ -92,8 +92,10 @@ namespace Base.Api
             builder.RegisterAssemblyTypes(assemblysServices)
                 .AsImplementedInterfaces()
                 .InstancePerLifetimeScope()
-                .EnableInterfaceInterceptors()//引用Autofac.Extras.DynamicProxy;
-               .InterceptedBy(typeof(RedisCacheAOPInterceptor), typeof(TransactionInterceptor));//可以直接替换拦截器 使用redis全局缓存
+                //引用Autofac.Extras.DynamicProxy;
+                .EnableInterfaceInterceptors()
+                //可以直接替换拦截器 使用redis全局缓存
+               .InterceptedBy(typeof(RedisCacheAOPInterceptor), typeof(TransactionInterceptor));
                //.InterceptedBy(typeof(TransactionInterceptor));//不使用redis全局缓存
             #endregion
 
