@@ -14,7 +14,7 @@ namespace Base.Api.Filters
 {
     public class ApiActionFilterAttribute : ActionFilterAttribute
     {
-        public HashSet<string> WhiteListURL { get; set; } = new HashSet<string>(new[] { "values/getlist" });
+        //public HashSet<string> WhiteListURL { get; set; } = new HashSet<string>(new[] { "values/login" });
 
         public override void OnActionExecuting(ActionExecutingContext context)
         {
@@ -30,17 +30,17 @@ namespace Base.Api.Filters
                     var requestHost = context.HttpContext.Request.Host.ToString();
                     var requestPath = context.HttpContext.Request.Path;
                     LogHelper.Info($"\r\nMethod:{requestMethod} \r\nHost:{requestHost} \r\nPath:{requestPath} \r\nBody:{requestBody} \r\n");
-                    //账户认证
-                    var reqObj = JsonConvert.DeserializeObject<dynamic>(requestBody);
-                    //不在白名单内
-                    if (!WhiteListURL.Contains(requestPath.ToString().ToLower().Replace(@"/api/","")))
-                    {
-                        //验证api用户是否合法
-                        if (false)
-                        {
-                            throw new Exception("身份验证失败。");
-                        }
-                    }
+                    ////账户认证
+                    //var reqObj = JsonConvert.DeserializeObject<dynamic>(requestBody);
+                    ////不在白名单内
+                    //if (!WhiteListURL.Contains(requestPath.ToString().ToLower().Replace(@"/api/","")))
+                    //{
+                    //    //验证api用户是否合法
+                    //    if (false)
+                    //    {
+                    //        throw new Exception("身份验证失败。");
+                    //    }
+                    //}
                 }
             }
             base.OnActionExecuting(context);

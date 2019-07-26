@@ -23,15 +23,6 @@ namespace Base.Api.Filters
                 }
             }
 
-            var result = new ExceptionResponse
-            {
-                ErrCode = 500,
-                ErrMsg = context.Exception.Message,
-                BizErrorMsg = context.Exception.Message
-            };
-            context.HttpContext.Response.StatusCode = 200;
-            context.HttpContext.Response.ContentType = "application/json;charset=utf-8";
-            context.HttpContext.Response.WriteAsync(JsonConvert.SerializeObject(result));
             base.OnException(context);
         }
     }

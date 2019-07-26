@@ -4,6 +4,54 @@
         <name>Base.Api</name>
     </assembly>
     <members>
+        <member name="M:Base.Api.AuthHelper.OverWrite.JwtHelper.IssueJwt(Base.Api.AuthHelper.OverWrite.TokenModelJwt)">
+            <summary>
+            颁发JWT字符串
+            </summary>
+            <param name="tokenModel"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Base.Api.AuthHelper.OverWrite.JwtHelper.SerializeJwt(System.String)">
+            <summary>
+            解析
+            </summary>
+            <param name="jwtStr"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Base.Api.AuthHelper.OverWrite.TokenModelJwt">
+            <summary>
+            令牌
+            </summary>
+        </member>
+        <member name="P:Base.Api.AuthHelper.OverWrite.TokenModelJwt.Uid">
+            <summary>
+            Id
+            </summary>
+        </member>
+        <member name="P:Base.Api.AuthHelper.OverWrite.TokenModelJwt.Role">
+            <summary>
+            角色
+            </summary>
+        </member>
+        <member name="P:Base.Api.AuthHelper.OverWrite.TokenModelJwt.Work">
+            <summary>
+            职能
+            </summary>
+        </member>
+        <member name="T:Base.Api.AuthHelper.OverWrite.JwtTokenAuth">
+            <summary>
+            中间件
+            原做为自定义授权中间件
+            先做检查 header token的使用
+            </summary>
+        </member>
+        <member name="M:Base.Api.Controllers.ValuesController.Login(Base.SDK.Request.Test.TestLoginRequest)">
+            <summary>
+            获取单个
+            </summary>
+            <param name="req"></param>
+            <returns></returns>
+        </member>
         <member name="M:Base.Api.Controllers.ValuesController.Get(Base.SDK.Request.Test.TestGetRequest)">
             <summary>
             获取单个

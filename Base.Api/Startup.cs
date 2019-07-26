@@ -15,9 +15,14 @@ using NLog.Extensions.Logging;
 using NLog.Web;
 using Swashbuckle.AspNetCore.Swagger;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using Base.Api.AuthHelper.OverWrite;
 using Base.Common.Redis;
+using Base.SDK.Response;
+using Microsoft.AspNetCore.Diagnostics;
+using Newtonsoft.Json;
 
 namespace Base.Api
 {
@@ -63,9 +68,32 @@ namespace Base.Api
                 var basePath = Microsoft.DotNet.PlatformAbstractions.ApplicationEnvironment.ApplicationBasePath;
                 var xmlPath = Path.Combine(basePath, "Base.Api.xml");//这个就是刚刚配置的xml文件名
                 c.IncludeXmlComments(xmlPath, true);//默认的第二个参数是false，这个是controller的注释，记得修改
+
+                #region Token绑定到ConfigureServices
+                //添加header验证信息
+                //c.OperationFilter<SwaggerHeader>();
+                var security = new Dictionary<string, IEnumerable<string>> { { "Base.Core", new string[] { } }, };
+                c.AddSecurityRequirement(security);
+                //方案名称“Blog.Core”可自定义，上下一致即可
+                c.AddSecurityDefinition("Base.Core", new ApiKeyScheme
+                {
+                    Description = "JWT授权(数据将在请求头中进行传输) 直接在下框中输入Bearer {token}（注意两者之间是一个空格）\"",
+                    Name = "Authorization",//jwt默认的参数名称
+                    In = "header",//jwt默认存放Authorization信息的位置(请求头中)
+                    Type = "apiKey"
+                });
+                #endregion
             });
 
             #endregion
+
+            #region MyRegion
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("SystemOrAdmin", policy => policy.RequireRole("Admin", "System"));
+            });
+            #endregion
+
 
 
             return RegisterAutofac(services);//注册Autofac
@@ -95,8 +123,8 @@ namespace Base.Api
                 //引用Autofac.Extras.DynamicProxy;
                 .EnableInterfaceInterceptors()
                 //可以直接替换拦截器 使用redis全局缓存
-               .InterceptedBy(typeof(RedisCacheAOPInterceptor), typeof(TransactionInterceptor));
-               //.InterceptedBy(typeof(TransactionInterceptor));//不使用redis全局缓存
+               //.InterceptedBy(typeof(RedisCacheAOPInterceptor), typeof(TransactionInterceptor));
+               .InterceptedBy(typeof(TransactionInterceptor));//不使用redis全局缓存
             #endregion
 
 
@@ -114,20 +142,42 @@ namespace Base.Api
 
             app.UseErrorHandling();
 
+            //app.UseJwtTokenAuth();
+            app.UseMiddleware<JwtTokenAuth>();
+
             //使用NLog作为日志记录工具
             loggerFactory.AddNLog();
             //引入Nlog配置文件
             env.ConfigureNLog("nlog.config");
 
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
-            else
-            {
-                app.UseExceptionHandler("/Home/Error");
-                app.UseHsts();
-            }
+            //if (env.IsDevelopment())
+            //{
+            //    app.UseDeveloperExceptionPage();
+            //}
+            //else
+            //{
+            //    app.UseExceptionHandler("/Home/Error");
+            //    app.UseHsts();
+            //}
+            app.UseExceptionHandler(builder => {
+
+                builder.Run(async context =>
+                {
+                    context.Response.StatusCode = StatusCodes.Status200OK;
+                    context.Response.ContentType = "application/json;charset=utf-8";
+                    var ex = context.Features.Get<IExceptionHandlerFeature>();
+                    var result = new ExceptionResponse
+                    {
+                        ErrCode = 500,
+                        ErrMsg = ex?.Error?.Message,
+                        BizErrorMsg = ex?.Error?.Message
+                    };
+                    
+                    await context.Response.WriteAsync(JsonConvert.SerializeObject(result));
+                });
+
+
+            });
 
             ////跨域
             app.UseCors("LimitRequests");

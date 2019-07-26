@@ -21,6 +21,7 @@ namespace Base.Api.Error
 
         public async Task Invoke(HttpContext context)
         {
+            //await context.Response.WriteAsync("xxx");
             var msg = "";
             try
             {
@@ -77,6 +78,5 @@ namespace Base.Api.Error
             return builder.UseMiddleware<ErrorHandlingMiddleware>();
         }
     }
-    //context.Response.WriteAsync(result);
 
 }
