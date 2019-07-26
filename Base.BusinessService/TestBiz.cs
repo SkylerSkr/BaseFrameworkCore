@@ -1,4 +1,5 @@
-﻿using Base.Common.Attribute;
+﻿using System;
+using Base.Common.Attribute;
 using Base.Domain.Entitys;
 using Base.IBusinessService;
 using Base.Repository;
@@ -44,11 +45,12 @@ namespace Base.BusinessService
 
         public SingleApiResponse Delete(TestSaveRequest req)
         {
+            throw new Exception("xxx");
             var result = RepoBase.Instance.GetWhere<SysUserInfoes>(x => x.UID == req.UID).ToList().FirstOrDefault();
             if (result == null) return new SingleApiResponse() { BizErrorMsg = "不包含此用户" };
 
             RepoBase.Instance.Delete(result);
-            //throw new Exception("xxx");
+          
             return new SingleApiResponse();
         }
 

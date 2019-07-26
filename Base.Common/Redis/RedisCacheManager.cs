@@ -14,7 +14,7 @@ namespace Base.Common.Redis
         private readonly object redisConnectionLock = new object();
         public RedisCacheManager()
         {
-            string redisConfiguration = ConfigHelper.GetSectionValue("RedisConnectString");//获取连接字符串
+            string redisConfiguration = Appsettings.app("RedisConnectString");//获取连接字符串
 
             if (string.IsNullOrWhiteSpace(redisConfiguration))
             {

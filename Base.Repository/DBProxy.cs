@@ -11,7 +11,7 @@ namespace Base.Repository
     {
         internal static IDbConnection CreateClient()
         {
-           var connString=ConfigHelper.GetSectionValue("SkrConnectString");
+           var connString= Appsettings.app("SkrConnectString");
            return new SqlConnection(connString);
         }
     }
