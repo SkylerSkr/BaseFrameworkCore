@@ -1,16 +1,22 @@
 ﻿using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using Autofac.Extras.DynamicProxy;
+using Base.Api.AuthHelper.OverWrite;
 using Base.Api.Error;
 using Base.Api.Filters;
 using Base.Api.Interceptor;
+using Base.Api.Log;
+using Base.Common.Redis;
+using Base.SDK.Response;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using NLog.Extensions.Logging;
 using NLog.Web;
 using Swashbuckle.AspNetCore.Swagger;
@@ -18,11 +24,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
-using Base.Api.AuthHelper.OverWrite;
-using Base.Common.Redis;
-using Base.SDK.Response;
-using Microsoft.AspNetCore.Diagnostics;
-using Newtonsoft.Json;
 
 namespace Base.Api
 {
@@ -48,7 +49,7 @@ namespace Base.Api
             services.AddMvc(config =>
             {
                 config.Filters.Add(new ApiActionFilterAttribute());
-                config.Filters.Add(new ApiErrorFilterAttribute());
+                //config.Filters.Add(new ApiErrorFilterAttribute());
 
             }).SetCompatibilityVersion(CompatibilityVersion.Version_2_1).AddControllersAsServices();
 
@@ -122,7 +123,7 @@ namespace Base.Api
                 .InstancePerLifetimeScope()
                 //引用Autofac.Extras.DynamicProxy;
                 .EnableInterfaceInterceptors()
-                //可以直接替换拦截器 使用redis全局缓存
+               //可以直接替换拦截器 使用redis全局缓存
                //.InterceptedBy(typeof(RedisCacheAOPInterceptor), typeof(TransactionInterceptor));
                .InterceptedBy(typeof(TransactionInterceptor));//不使用redis全局缓存
             #endregion
@@ -150,19 +151,14 @@ namespace Base.Api
             //引入Nlog配置文件
             env.ConfigureNLog("nlog.config");
 
-            //if (env.IsDevelopment())
-            //{
-            //    app.UseDeveloperExceptionPage();
-            //}
-            //else
-            //{
-            //    app.UseExceptionHandler("/Home/Error");
-            //    app.UseHsts();
-            //}
-            app.UseExceptionHandler(builder => {
+            //异常处理
+            app.UseExceptionHandler(builder =>
+            {
 
                 builder.Run(async context =>
                 {
+
+
                     context.Response.StatusCode = StatusCodes.Status200OK;
                     context.Response.ContentType = "application/json;charset=utf-8";
                     var ex = context.Features.Get<IExceptionHandlerFeature>();
@@ -172,7 +168,17 @@ namespace Base.Api
                         ErrMsg = ex?.Error?.Message,
                         BizErrorMsg = ex?.Error?.Message
                     };
-                    
+
+                    using (var requestSm = context.Request.Body)
+                    {
+                        var requestMethod = context.Request.Method;
+                        var requestHost = context.Request.Host.ToString();
+                        var requestPath = context.Request.Path;
+                        var exception = ex?.Error?.Message;
+                        LogHelper.Error($"\r\nMethod:{requestMethod} \r\nHost:{requestHost} \r\nPath:{requestPath} \r\nException:{exception} \r\n");
+                    }
+
+
                     await context.Response.WriteAsync(JsonConvert.SerializeObject(result));
                 });
 
