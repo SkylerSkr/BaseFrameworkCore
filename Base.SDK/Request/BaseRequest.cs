@@ -6,6 +6,6 @@ namespace Base.SDK.Request
 {
     public class BaseRequest
     {
-        public string Token;
+        //public string Token;
     }
 }
