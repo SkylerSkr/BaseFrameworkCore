@@ -8,6 +8,7 @@ using Base.Api.Interceptor;
 using Base.Api.Log;
 using Base.Common.Redis;
 using Base.SDK.Response;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Hosting;
@@ -16,6 +17,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using NLog.Extensions.Logging;
 using NLog.Web;
@@ -24,6 +26,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using System.Text;
 
 namespace Base.Api
 {
@@ -88,11 +91,46 @@ namespace Base.Api
 
             #endregion
 
-            #region MyRegion
+            #region JWT认证
+            //读取配置文件
+            var audienceConfig = Configuration.GetSection("Audience");
+            var symmetricKeyAsBase64 = audienceConfig["Secret"];
+            var keyByteArray = Encoding.ASCII.GetBytes(symmetricKeyAsBase64);
+            var signingKey = new SymmetricSecurityKey(keyByteArray);
+
+            // 令牌验证参数
+            var tokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = signingKey,//还是从 appsettings.json 拿到的
+                ValidateIssuer = true,
+                ValidIssuer = audienceConfig["Issuer"],//发行人
+                ValidateAudience = true,
+                ValidAudience = audienceConfig["Audience"],//订阅人
+                ValidateLifetime = true,
+                ClockSkew = TimeSpan.Zero,
+                RequireExpirationTime = true,
+            };
             services.AddAuthorization(options =>
             {
+                options.AddPolicy("Client", policy => policy.RequireRole("Client").Build());
+                options.AddPolicy("Admin", policy => policy.RequireRole("Admin").Build());
+                //这个写法是错误的，这个是并列的关系，不是或的关系
+                //options.AddPolicy("AdminOrClient", policy => policy.RequireRole("Admin,Client").Build());
+
+                //这个才是或的关系
                 options.AddPolicy("SystemOrAdmin", policy => policy.RequireRole("Admin", "System"));
             });
+            services.AddAuthentication(x =>
+                {
+                    x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                    x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                })
+                .AddJwtBearer(o =>
+                {
+                    o.TokenValidationParameters = tokenValidationParameters;
+                });
+
             #endregion
 
 
@@ -144,7 +182,8 @@ namespace Base.Api
             app.UseErrorHandling();
 
             //app.UseJwtTokenAuth();
-            app.UseMiddleware<JwtTokenAuth>();
+            //app.UseMiddleware<JwtTokenAuth>();
+            app.UseAuthentication();
 
             //使用NLog作为日志记录工具
             loggerFactory.AddNLog();
