@@ -1,4 +1,5 @@
 ﻿using Base.Api.AuthHelper.OverWrite;
+using Base.Common.Token;
 using Base.IBusinessService;
 using Base.Repository;
 using Base.SDK.Request;
@@ -22,11 +23,12 @@ namespace Base.Api.Controllers
         /// <param name="req"></param>
         /// <returns></returns>
         [HttpPost("Login")]
+        [AllowAnonymous]//不受授权控制，任何人都可访问
         public SingleApiResponse Login([FromBody]TestLoginRequest req)
         {
             TokenModelJwt tokenModel = new TokenModelJwt { Uid = 1, Role = req.userRole };
-            var jwtStr = JwtHelper.IssueJwt(tokenModel);//登录，获取到一定规则的 Token 令牌
-            return new SingleApiResponse(){Data = jwtStr };
+            var jwtStr = JwtHelper.IssueJWT(tokenModel);//登录，获取到一定规则的 Token 令牌
+            return new SingleApiResponse(){Data = "Bearer "+ jwtStr };
         }
 
         /// <summary>
@@ -35,6 +37,7 @@ namespace Base.Api.Controllers
         /// <param name="req"></param>
         /// <returns></returns>
         [HttpPost("Get")]
+        [Authorize(Roles = "Admin")]
         public SingleApiResponse Get([FromBody]TestGetRequest req)
         {
             return TestBiz.Get(req);
@@ -57,7 +60,6 @@ namespace Base.Api.Controllers
         /// <param name="req"></param>
         /// <returns></returns>
         [HttpPost("Delete")]
-        [Authorize(Roles = "Admin")]
         public SingleApiResponse Delete([FromBody]TestSaveRequest req)
         {
             return TestBiz.Delete(req);

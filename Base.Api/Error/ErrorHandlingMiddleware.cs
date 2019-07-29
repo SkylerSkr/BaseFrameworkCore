@@ -44,6 +44,11 @@ namespace Base.Api.Error
                     msg = "未授权";
                     await HandleExceptionAsync(context, statusCode, msg);
                 }
+                if (statusCode == 403)
+                {
+                    msg = "无权限";
+                    await HandleExceptionAsync(context, statusCode, msg);
+                }
                 else if (statusCode == 404)
                 {
                     msg = "未找到服务";
