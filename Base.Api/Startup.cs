@@ -26,7 +26,11 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using System.Security.Claims;
 using System.Text;
+using Base.Api.AuthHelper.Policys;
+using Base.SDK.Model;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Base.Api
 {
@@ -91,45 +95,74 @@ namespace Base.Api
 
             #endregion
 
-            #region JWT认证
+            #region JWT Token Service
             //读取配置文件
             var audienceConfig = Configuration.GetSection("Audience");
             var symmetricKeyAsBase64 = audienceConfig["Secret"];
             var keyByteArray = Encoding.ASCII.GetBytes(symmetricKeyAsBase64);
             var signingKey = new SymmetricSecurityKey(keyByteArray);
 
-            // 令牌验证参数
+            // 令牌验证参数，之前我们都是写在AddJwtBearer里的，这里提出来了
             var tokenValidationParameters = new TokenValidationParameters
             {
-                ValidateIssuerSigningKey = true,
-                IssuerSigningKey = signingKey,//还是从 appsettings.json 拿到的
-                ValidateIssuer = true,
+                ValidateIssuerSigningKey = true,//验证发行人的签名密钥
+                IssuerSigningKey = signingKey,
+                ValidateIssuer = true,//验证发行人
                 ValidIssuer = audienceConfig["Issuer"],//发行人
-                ValidateAudience = true,
+                ValidateAudience = true,//验证订阅人
                 ValidAudience = audienceConfig["Audience"],//订阅人
-                ValidateLifetime = true,
-                ClockSkew = TimeSpan.Zero,
-                RequireExpirationTime = true,
+                ValidateLifetime = true,//验证生命周期
+                ClockSkew = TimeSpan.Zero,//这个是定义的过期的缓存时间
+                RequireExpirationTime = true,//是否要求过期
+
             };
+            var signingCredentials = new SigningCredentials(signingKey, SecurityAlgorithms.HmacSha256);
+
+            // 如果要数据库动态绑定，这里先留个空，后边处理器里动态赋值
+            var permission = new List<PermissionItem>();
+
+            // 角色与接口的权限要求参数
+            var permissionRequirement = new PermissionRequirement(
+                "/api/denied",// 拒绝授权的跳转地址（目前无用）
+                permission,//这里还记得么，就是我们上边说到的角色地址信息凭据实体类 Permission
+                ClaimTypes.Role,//基于角色的授权
+                audienceConfig["Issuer"],//发行人
+                audienceConfig["Audience"],//订阅人
+                signingCredentials,//签名凭据
+                expiration: TimeSpan.FromSeconds(60 * 2)//接口的过期时间，注意这里没有了缓冲时间，你也可以自定义，在上边的TokenValidationParameters的 ClockSkew
+                );
+
+            // ① 核心之一，配置授权服务，也就是具体的规则，已经对应的权限策略，比如公司不同权限的门禁卡
             services.AddAuthorization(options =>
             {
-                options.AddPolicy("Client", policy => policy.RequireRole("Client").Build());
-                options.AddPolicy("Admin", policy => policy.RequireRole("Admin").Build());
-                //这个写法是错误的，这个是并列的关系，不是或的关系
-                //options.AddPolicy("AdminOrClient", policy => policy.RequireRole("Admin,Client").Build());
+                options.AddPolicy("Client",
+                    policy => policy.RequireRole("Client").Build());
+                options.AddPolicy("Admin",
+                    policy => policy.RequireRole("Admin").Build());
+                options.AddPolicy("SystemOrAdmin",
+                    policy => policy.RequireRole("Admin", "System"));
 
-                //这个才是或的关系
-                options.AddPolicy("SystemOrAdmin", policy => policy.RequireRole("Admin", "System"));
+                // 自定义基于策略的授权权限
+                options.AddPolicy("Permission",
+                         policy => policy.Requirements.Add(permissionRequirement));
+            })
+            // ② 核心之二，必需要配置认证服务，这里是jwtBearer默认认证，比如光有卡没用，得能识别他们
+            .AddAuthentication(x =>
+            {
+                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            // ③ 核心之三，针对JWT的配置，比如门禁是如何识别的，是放射卡，还是磁卡
+            .AddJwtBearer(o =>
+            {
+                o.TokenValidationParameters = tokenValidationParameters;
             });
-            services.AddAuthentication(x =>
-                {
-                    x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                    x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-                })
-                .AddJwtBearer(o =>
-                {
-                    o.TokenValidationParameters = tokenValidationParameters;
-                });
+
+
+            // 依赖注入，将自定义的授权处理器 匹配给官方授权处理器接口，这样当系统处理授权的时候，就会直接访问我们自定义的授权处理器了。
+            services.AddSingleton<IAuthorizationHandler, PermissionHandler>();
+            // 将授权必要类注入生命周期内
+            services.AddSingleton(permissionRequirement);
 
             #endregion
 
