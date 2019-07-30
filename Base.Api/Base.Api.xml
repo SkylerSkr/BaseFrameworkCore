@@ -25,6 +25,88 @@
             先做检查 header token的使用
             </summary>
         </member>
+        <member name="T:Base.Api.AuthHelper.Policys.JwtToken">
+            <summary>
+            JWTToken生成类
+            </summary>
+        </member>
+        <member name="M:Base.Api.AuthHelper.Policys.JwtToken.BuildJwtToken(System.Security.Claims.Claim[],Base.Api.AuthHelper.Policys.PermissionRequirement)">
+            <summary>
+            获取基于JWT的Token
+            </summary>
+            <param name="claims">需要在登陆的时候配置</param>
+            <param name="permissionRequirement">在startup中定义的参数</param>
+            <returns></returns>
+        </member>
+        <member name="T:Base.Api.AuthHelper.Policys.PermissionHandler">
+            <summary>
+            权限授权处理器 继承AuthorizationHandler ，并且需要一个权限必要参数
+            </summary>
+        </member>
+        <member name="F:Base.Api.AuthHelper.Policys.PermissionHandler._testBiz">
+            <summary>
+            services 层注入
+            </summary>
+        </member>
+        <member name="T:Base.Api.AuthHelper.Policys.PermissionRequirement">
+            <summary>
+            必要参数类，
+            继承 IAuthorizationRequirement，用于设计自定义权限处理器PermissionHandler
+            因为AuthorizationHandler 中的泛型参数 TRequirement 必须继承 IAuthorizationRequirement
+            </summary>
+        </member>
+        <member name="P:Base.Api.AuthHelper.Policys.PermissionRequirement.Permissions">
+            <summary>
+            用户权限集合
+            </summary>
+        </member>
+        <member name="P:Base.Api.AuthHelper.Policys.PermissionRequirement.DeniedAction">
+            <summary>
+            无权限action
+            </summary>
+        </member>
+        <member name="P:Base.Api.AuthHelper.Policys.PermissionRequirement.ClaimType">
+            <summary>
+            认证授权类型
+            </summary>
+        </member>
+        <member name="P:Base.Api.AuthHelper.Policys.PermissionRequirement.LoginPath">
+            <summary>
+            请求路径
+            </summary>
+        </member>
+        <member name="P:Base.Api.AuthHelper.Policys.PermissionRequirement.Issuer">
+            <summary>
+            发行人
+            </summary>
+        </member>
+        <member name="P:Base.Api.AuthHelper.Policys.PermissionRequirement.Audience">
+            <summary>
+            订阅人
+            </summary>
+        </member>
+        <member name="P:Base.Api.AuthHelper.Policys.PermissionRequirement.Expiration">
+            <summary>
+            过期时间
+            </summary>
+        </member>
+        <member name="P:Base.Api.AuthHelper.Policys.PermissionRequirement.SigningCredentials">
+            <summary>
+            签名验证
+            </summary>
+        </member>
+        <member name="M:Base.Api.AuthHelper.Policys.PermissionRequirement.#ctor(System.String,System.Collections.Generic.List{Base.SDK.Model.PermissionItem},System.String,System.String,System.String,Microsoft.IdentityModel.Tokens.SigningCredentials,System.TimeSpan)">
+            <summary>
+            构造
+            </summary>
+            <param name="deniedAction">拒约请求的url</param>
+            <param name="permissions">权限集合</param>
+            <param name="claimType">声明类型</param>
+            <param name="issuer">发行人</param>
+            <param name="audience">订阅人</param>
+            <param name="signingCredentials">签名验证实体</param>
+            <param name="expiration">过期时间</param>
+        </member>
         <member name="M:Base.Api.Controllers.ValuesController.Login(Base.SDK.Request.Test.TestLoginRequest)">
             <summary>
             获取单个

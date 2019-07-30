@@ -37,7 +37,7 @@ namespace Base.Api.Controllers
         /// <param name="req"></param>
         /// <returns></returns>
         [HttpPost("Get")]
-        [Authorize(Roles = "Admin")]
+        [Authorize("Permission")]
         public SingleApiResponse Get([FromBody]TestGetRequest req)
         {
             return TestBiz.Get(req);
@@ -71,7 +71,7 @@ namespace Base.Api.Controllers
         /// <param name="req"></param>
         /// <returns></returns>
         [HttpPost("GetList")]
-        [Authorize(Policy = "SystemOrAdmin")]
+        [Authorize("Permission")]
         public ListApiResponse GetList([FromBody]TestGetListRequest req)
         {
             return TestBiz.GetList(req);

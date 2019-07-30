@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Base.Common.Attribute;
 using Base.Domain.Entitys;
 using Base.IBusinessService;
@@ -14,6 +15,15 @@ namespace Base.BusinessService
     public class TestBiz : ITestBiz
     {
         private static readonly TestRepo TestRepo = new TestRepo();
+
+        public List<PermissionItem> GetRoleModule()
+        {
+            List<PermissionItem> list = new List<PermissionItem>();
+            list.Add(new PermissionItem() { UserId = 1, LinkUrl = "/api/values/get" });
+            list.Add(new PermissionItem() { UserId = 1, LinkUrl = "/api/values/getlist" });
+            list.Add(new PermissionItem() { UserId = 2, LinkUrl = "/api/values/get" });
+            return list;
+        }
 
         [Caching(AbsoluteExpiration = 10000)]
         public SingleApiResponse Get(TestGetRequest req)
