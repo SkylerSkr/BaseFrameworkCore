@@ -2,9 +2,9 @@
 #项目介绍<br> 
 这是一个基于.Net Core设计的基础框架,只是后端框架。<br> 
 使用了AutoFac做依赖注入,接口化编程更易于扩展。<br> 
-用Dapper做orm框架,很轻很快速,提供了简单的扩展方法,可以在biz层快速的处理单表的CRUD。<br> 
+用Dapper做orm框架,很轻很快速,提供了简单的扩展方法,可以在biz层快速的处理单表的CRUD,支持多数据库。<br> 
 请求和响应标准化,对前端保证一致性。<br> 
-使用Jwt做认证和授权。<br> 
+使用Jwt做认证和授权。支持角色,策略,数据库动态鉴权<br> 
 使用过滤器做了日志记录。<br> 
 使用管道重写了异常响应。<br> 
 使用拦截器实现了单请求内非侵入的全局事务。<br> 
@@ -27,7 +27,7 @@ Enum文件夹：数据库枚举。<br>
 ### Base.Repository 数据访问层
 Repo文件夹：存放Repo，需继承RepositoryBase基类才可使用分页。<br>
 DBProxy：管理数据库连接对象。
-RepoBase：一些扩展方法，使用此扩展方法，可以在Biz层快速处理单表的CURD。<br>
+RepoBase：一些扩展方法，使用此扩展方法，可以在Biz层快速处理单表的CURD,支持多数据库。<br>
 
 ## Base.Api 表示层
 Controllers文件夹：存放控制器。<br>
