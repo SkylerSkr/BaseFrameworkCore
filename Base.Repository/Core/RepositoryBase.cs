@@ -3,17 +3,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Base.Domain;
+using Base.Domain.Enum;
 using Dapper;
 
 namespace Base.Repository.Core
 {
     public abstract class RepositoryBase
     {
-        internal virtual Tuple<int, List<TOut>> QueryPage<TIn, TOut>(StringBuilder sql, DynamicParameters param,string orderSql=null,int? startSize=null,int? pageSize=null)
+        internal virtual Tuple<int, List<TOut>> QueryPage<TIn, TOut>(StringBuilder sql, DynamicParameters param,string orderSql=null,int? startSize=null,int? pageSize=null, EnumDBType? dbType = null)
             where TIn : EntityBase
             where TOut : class
         {
-            var dbClient = DBProxy.CreateClient();
+            var dbClient = DBProxy.CreateClient(dbType);
             //计数
             var countSql = $"select count(*) from ({sql.ToString()})tCount;";
             var totalCount = dbClient.ExecuteScalar(countSql, param);

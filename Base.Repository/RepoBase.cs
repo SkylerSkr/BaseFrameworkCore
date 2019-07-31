@@ -5,6 +5,7 @@ using System.Linq.Expressions;
 using System.Text;
 using Base.Common.Tools;
 using Base.Domain;
+using Base.Domain.Enum;
 using Base.Repository.Core;
 using Dapper;
 using DapperExtensions;
@@ -16,7 +17,7 @@ namespace Base.Repository
     /// </summary>
     public sealed class RepoBase: Singleton<RepoBase>
     {
-        public long BulkInsert<T>(IEnumerable<T> entitys, string primaryKey) where T : EntityBase
+        public long BulkInsert<T>(IEnumerable<T> entitys, string primaryKey, EnumDBType? dbType = null) where T : EntityBase
         {
             if (entitys.Count() > 1000)
             {
@@ -68,46 +69,46 @@ namespace Base.Repository
             #endregion
 
 
-            var dbClient = DBProxy.CreateClient();
+            var dbClient = DBProxy.CreateClient(dbType);
             var iRowsCount = dbClient.Execute(sb.ToString(), new DynamicParameters());
             return iRowsCount;
         }
 
-        public void BulkInsert<T>(IEnumerable<T> entitys) where T : EntityBase
+        public void BulkInsert<T>(IEnumerable<T> entitys, EnumDBType? dbType = null) where T : EntityBase
         {
-            var dbClient = DBProxy.CreateClient();
+            var dbClient = DBProxy.CreateClient(dbType);
             dbClient.Insert(entitys);
         }
-        public long Add<T>(T entity) where T : EntityBase
+        public long Add<T>(T entity, EnumDBType? dbType = null) where T : EntityBase
         {
-            var dbClient = DBProxy.CreateClient();
+            var dbClient = DBProxy.CreateClient(dbType);
             var identify = dbClient.Insert(entity);
             return identify;
         }
 
-        public bool Delete<T>(T entity) where T : EntityBase
+        public bool Delete<T>(T entity, EnumDBType? dbType = null) where T : EntityBase
         {
-            var dbClient = DBProxy.CreateClient();
+            var dbClient = DBProxy.CreateClient(dbType);
             return dbClient.Delete<T>(entity);
         }
 
-        public bool Update<T>(T entity) where T : EntityBase
+        public bool Update<T>(T entity, EnumDBType? dbType = null) where T : EntityBase
         {
-            var dbClient = DBProxy.CreateClient();
+            var dbClient = DBProxy.CreateClient(dbType);
             return dbClient.Update(entity);
 
         }
 
-        public T Get<T>(object id) where T : EntityBase
+        public T Get<T>(object id, EnumDBType? dbType = null) where T : EntityBase
         {
-            var dbClient = DBProxy.CreateClient();
+            var dbClient = DBProxy.CreateClient(dbType);
             var entity = dbClient.Get<T>(id);
             return entity;
         }
 
-        public IEnumerable<T> GetWhere<T>(Expression<Func<T, bool>> predicate) where T : EntityBase
+        public IEnumerable<T> GetWhere<T>(Expression<Func<T, bool>> predicate, EnumDBType? dbType = null) where T : EntityBase
         {
-            var client = DBProxy.CreateClient();
+            var client = DBProxy.CreateClient(dbType);
             // 拼接sql的方式批量插入
             Type Ts = typeof(T);
             var sql = $"select * from {Ts.Name.Replace("Entity", "")} where {SqlExpress.Instance.GetSql(predicate)}";
