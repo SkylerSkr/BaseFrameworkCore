@@ -1,12 +1,12 @@
-﻿using Base.Common.Config;
-using Microsoft.IdentityModel.Tokens;
-using System;
+﻿using System;
+using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using Base.Common.Token;
+using Base.Common.Config;
+using Microsoft.IdentityModel.Tokens;
 
-namespace Base.Api.AuthHelper.OverWrite
+namespace Base.Common.Token
 {
     public class JwtHelper
     {
@@ -89,6 +89,4 @@ namespace Base.Api.AuthHelper.OverWrite
             return tm;
         }
     }
-
-    
 }

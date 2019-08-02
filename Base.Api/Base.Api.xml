@@ -4,20 +4,6 @@
         <name>Base.Api</name>
     </assembly>
     <members>
-        <member name="M:Base.Api.AuthHelper.OverWrite.JwtHelper.IssueJWT(Base.Common.Token.TokenModelJwt)">
-            <summary>
-            颁发JWT字符串
-            </summary>
-            <param name="tokenModel"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Base.Api.AuthHelper.OverWrite.JwtHelper.SerializeJwt(System.String)">
-            <summary>
-            解析
-            </summary>
-            <param name="jwtStr"></param>
-            <returns></returns>
-        </member>
         <member name="T:Base.Api.AuthHelper.OverWrite.JwtTokenAuth">
             <summary>
             中间件
