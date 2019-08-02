@@ -115,6 +115,17 @@ namespace Base.Repository
             return client.Query<T>(sql);
         }
 
+        public IEnumerable<TDto> GetWhere<T, TDto>(Expression<Func<T, bool>> predicate, EnumDBType? dbType = null)
+            where T : EntityBase
+            where TDto : class
+        {
+            var client = DBProxy.CreateClient(dbType);
+            // 拼接sql的方式批量插入
+            Type Ts = typeof(T);
+            var sql = $"select * from {Ts.Name.Replace("Entity", "")} where {SqlExpress.Instance.GetSql(predicate)}";
+            return client.Query<TDto>(sql);
+        }
+
         #region 辅助方法
 
         /// <summary>
