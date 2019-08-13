@@ -231,6 +231,8 @@ namespace Base.Repository.Core
         }
         private string NullValueDeal(ExpressionType NodeType, string value)
         {
+            if (value.Equals("False")) value = "0";
+            if (value.Equals("True")) value = "1";
             if (value.ToUpper() != "NULL")
             {
                 return GetOperStr(NodeType) + value;
