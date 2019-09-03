@@ -29,6 +29,10 @@ Repo文件夹：存放Repo，需继承RepositoryBase基类才可使用分页。<
 DBProxy：管理数据库连接对象。
 RepoBase：一些扩展方法，使用此扩展方法，可以在Biz层快速处理单表的CURD，支持多数据库。<br>
 
+## 4-Common 公共层
+
+## 5-BaseTest 单元测试层
+
 ## Base.Api 表示层
 Controllers文件夹：存放控制器。<br>
 AuthHelper文件夹：Jwt认证中间件。<br>
