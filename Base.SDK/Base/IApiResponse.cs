@@ -10,21 +10,25 @@ namespace Base.SDK.Base
     public interface IApiResponse
     {
         /// <summary>
-        /// 获取错误信息
+        /// 系统级别的参数，请业务代码不要使用 - 错误码
         /// </summary>
-        /// <returns></returns>
-        string GetErrorMessage();
+        int? ErrCode { get; set; }
+
+        /// <summary>
+        /// 系统级别的参数，请业务代码不要使用 - 错误信息
+        /// </summary>
+        string ErrMsg { get; set; }
 
         ///// <summary>
         ///// 请求是否成功
         ///// </summary>
         ///// <returns></returns>
-        //bool IsSuccess();
+        bool IsSuccess { get; }
 
         /// <summary>
-        /// 获取错误code
+        /// 业务是否成功
         /// </summary>
         /// <returns></returns>
-        int? GetErrCode();
+        bool IsBizSuccess { get; }
     }
 }

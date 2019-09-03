@@ -54,14 +54,6 @@ namespace Base.SDK.Base
         /// </summary>
         public string ErrMsg { get; set; }
 
-        /// <summary>
-        /// 系统级别的方法，请业务代码不要使用 - 获取失败信息
-        /// </summary>
-        /// <returns></returns>
-        public string GetErrorMessage()
-        {
-            return ErrMsg;
-        }
 
         /// <summary>
         /// 系统级别的方法，请业务代码不要使用 - 请求是否成功
@@ -70,15 +62,6 @@ namespace Base.SDK.Base
         public bool IsSuccess
         {
             get { return ErrCode == null; }
-        }
-
-        /// <summary>
-        /// 返回错误code
-        /// </summary>
-        /// <returns></returns>
-        public int? GetErrCode()
-        {
-            return ErrCode;
         }
         #endregion
 
