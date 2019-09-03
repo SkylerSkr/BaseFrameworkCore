@@ -18,7 +18,7 @@ namespace Base.SDK.Request.Test
 
         public override string GetApiName()
         {
-            return "Test/Login";
+            return "Values/Login";
         }
     }
 }
