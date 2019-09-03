@@ -19,7 +19,7 @@ namespace Base.SDK.Request.Test
 
         public override string GetApiName()
         {
-            return "Values/Get";
+            return "api/Values/Get";
         }
     }
 }

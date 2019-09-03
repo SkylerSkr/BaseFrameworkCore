@@ -55,11 +55,11 @@ namespace Base.Api.AuthHelper.Policys
             {
                 // 获取当前用户的角色信息
                 var currentUserRole = (from item in httpContext.User.Claims
-                                        where item.Type == requirement.ClaimType
-                                        select item.Value).FirstOrDefault();
+                                       where item.Type == requirement.ClaimType
+                                       select item.Value).FirstOrDefault();
 
                 //验证权限
-                if (currentUserRole==null || requirement.Permissions.Where(w => w.LinkUrl.ToLower() == questUrl).All(w => w.UserId != Convert.ToInt32(currentUserRole)) )
+                if (currentUserRole == null || requirement.Permissions.Where(w => w.LinkUrl.ToLower() == questUrl).All(w => w.UserId != Convert.ToInt32(currentUserRole)))
                 {
 
                     context.Fail();
