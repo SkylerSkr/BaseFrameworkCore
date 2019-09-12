@@ -58,7 +58,11 @@ namespace Base.Api
                 config.Filters.Add(new ApiActionFilterAttribute());
                 //config.Filters.Add(new ApiErrorFilterAttribute());
 
-            }).SetCompatibilityVersion(CompatibilityVersion.Version_2_1).AddControllersAsServices();
+            }).SetCompatibilityVersion(CompatibilityVersion.Version_2_1).AddControllersAsServices()
+                .AddJsonOptions(opt =>
+                {
+                    opt.SerializerSettings.ContractResolver = new Newtonsoft.Json.Serialization.DefaultContractResolver();//json字符串大小写原样输出
+                });
 
             #region Swagger
             services.AddSwaggerGen(c =>
