@@ -5,6 +5,7 @@ using System.Security.Claims;
 using System.Text;
 using Base.Common.Config;
 using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json;
 
 namespace Base.Common.Token
 {
@@ -43,7 +44,7 @@ namespace Base.Common.Token
                 new Claim(JwtRegisteredClaimNames.Iss,"Base.Core"),
                 new Claim(JwtRegisteredClaimNames.Aud,"wr"),
                 //这个Role是官方UseAuthentication要要验证的Role，我们就不用手动设置Role这个属性了
-                new Claim(ClaimTypes.Role,tokenModel.Role),
+                new Claim(ClaimTypes.Role,JsonConvert.SerializeObject(tokenModel)),
                };
 
 

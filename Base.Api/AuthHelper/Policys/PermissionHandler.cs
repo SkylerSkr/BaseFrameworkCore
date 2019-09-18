@@ -9,6 +9,8 @@ using System.Threading.Tasks;
 using Base.Api.AuthHelper.OverWrite;
 using Base.BusinessService;
 using Base.Common.Token;
+using Microsoft.AspNetCore.Http;
+using Newtonsoft.Json;
 
 namespace Base.Api.AuthHelper.Policys
 {
@@ -54,17 +56,19 @@ namespace Base.Api.AuthHelper.Policys
             if (requirement.Permissions.GroupBy(g => g.LinkUrl).Any(w => w.Key?.ToLower() == questUrl))
             {
                 // 获取当前用户的角色信息
-                var currentUserRole = (from item in httpContext.User.Claims
-                                       where item.Type == requirement.ClaimType
-                                       select item.Value).FirstOrDefault();
+                var jwtUidAndRole = JsonConvert.DeserializeObject<TokenModelJwt>((from item in httpContext.User.Claims
+                    where item.Type == requirement.ClaimType
+                    select item.Value).FirstOrDefault());
+                httpContext.Session.SetString("uid", jwtUidAndRole.Uid.ToString());
+                httpContext.Session.SetString("role", jwtUidAndRole.Role.ToString());
 
-                //验证权限
-                if (currentUserRole == null || requirement.Permissions.Where(w => w.LinkUrl.ToLower() == questUrl).All(w => w.UserId != Convert.ToInt32(currentUserRole)))
-                {
+                ////验证权限
+                //if (currentUserRole == null || requirement.Permissions.Where(w => w.LinkUrl.ToLower() == questUrl).All(w => w.UserId != Convert.ToInt32(currentUserRole)))
+                //{
 
-                    context.Fail();
-                    return;
-                }
+                //    context.Fail();
+                //    return;
+                //}
             }
             else
             {

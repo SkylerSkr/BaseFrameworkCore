@@ -53,6 +53,7 @@ namespace Base.Api
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
+            services.AddSession();
             services.AddMvc(config =>
             {
                 config.Filters.Add(new ApiActionFilterAttribute());
@@ -279,6 +280,7 @@ namespace Base.Api
             });
             #endregion
 
+            app.UseSession();
             app.UseMvc(routes =>
             {
                 routes.MapRoute(

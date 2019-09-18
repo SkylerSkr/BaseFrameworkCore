@@ -14,6 +14,9 @@ namespace Base.SDK.Base
         /// </summary>
         public string Token { get; set; }
 
+        public int JwtUid { get; set; }
+        public string JwtRole { get; set; }
+
         /// <summary>
         /// 获取接口地址
         /// </summary>

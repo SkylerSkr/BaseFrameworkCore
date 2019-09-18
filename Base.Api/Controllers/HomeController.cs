@@ -5,10 +5,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Base.Api.Models;
+using Microsoft.AspNetCore.Http;
 
 namespace Base.Api.Controllers
 {
-    public class HomeController : Controller
+    public class HomeController : ControllerBase
     {
         public IActionResult Index()
         {

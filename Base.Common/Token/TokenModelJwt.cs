@@ -12,7 +12,7 @@ namespace Base.Common.Token
         /// <summary>
         /// Id
         /// </summary>
-        public long Uid { get; set; }
+        public int Uid { get; set; }
         /// <summary>
         /// 角色
         /// </summary>

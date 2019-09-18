@@ -6,6 +6,7 @@ using Base.SDK.Request;
 using Base.SDK.Request.Test;
 using Base.SDK.Response;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -13,7 +14,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Base.Api.Controllers
 {
     [Route("api/[controller]")]
-    public class ValuesController : Controller
+    public class ValuesController : ControllerBase
     {
         public ITestBiz TestBiz { get; set; }
 
@@ -40,6 +41,7 @@ namespace Base.Api.Controllers
         [Authorize("Permission")]
         public SingleApiResponse Get([FromBody]TestGetRequest req)
         {
+            SetJwtUidAndRole(req);
             return TestBiz.Get(req);
         }
 
