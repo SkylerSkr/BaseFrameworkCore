@@ -60,7 +60,7 @@ namespace Base.Api.AuthHelper.Policys
                     where item.Type == requirement.ClaimType
                     select item.Value).FirstOrDefault());
                 httpContext.Session.SetString("uid", jwtUidAndRole.Uid.ToString());
-                httpContext.Session.SetString("role", jwtUidAndRole.Role.ToString());
+                httpContext.Session.SetString("role", jwtUidAndRole.Role);
 
                 ////验证权限
                 //if (currentUserRole == null || requirement.Permissions.Where(w => w.LinkUrl.ToLower() == questUrl).All(w => w.UserId != Convert.ToInt32(currentUserRole)))

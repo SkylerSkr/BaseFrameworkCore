@@ -46,6 +46,36 @@ namespace Base.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public IServiceProvider ConfigureServices(IServiceCollection services)
         {
+
+            #region CORS
+            //跨域第二种方法，声明策略，记得下边app中配置
+            services.AddCors(c =>
+            {
+                //↓↓↓↓↓↓↓注意正式环境不要使用这种全开放的处理↓↓↓↓↓↓↓↓↓↓
+                c.AddPolicy("AllRequests", policy =>
+                {
+                    policy
+                        .AllowAnyOrigin()//允许任何源
+                        .AllowAnyMethod()//允许任何方式
+                        .AllowAnyHeader()//允许任何头
+                        .AllowCredentials();//允许cookie
+                });
+                //↑↑↑↑↑↑↑注意正式环境不要使用这种全开放的处理↑↑↑↑↑↑↑↑↑↑
+
+
+                ////一般采用这种方法
+                //c.AddPolicy("LimitRequests", policy =>
+                //{
+                //    policy
+                //        .WithOrigins("http://localhost:8889")//支持多个域名端口，注意端口号后不要带/斜杆：比如localhost:8000/，是错的
+                //        .AllowAnyHeader()//Ensures that the policy allows any header.
+                //        .AllowAnyMethod();
+                //});
+            });
+
+
+            #endregion
+
             services.Configure<CookiePolicyOptions>(options =>
             {
                 // This lambda determines whether user consent for non-essential cookies is needed for a given request.
@@ -263,7 +293,8 @@ namespace Base.Api
             });
 
             ////跨域
-            app.UseCors("LimitRequests");
+            //app.UseCors("LimitRequests");
+            app.UseCors("AllRequests");
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
